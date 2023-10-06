@@ -1,0 +1,5 @@
+name: ${name}
+authors:
+  - Md5Lukas
+main: de.md5lukas.<package>.legacy.RequiresPaperPlugins
+version: ${version}

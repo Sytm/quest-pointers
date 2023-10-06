@@ -1,0 +1,10 @@
+name: ${name}
+authors:
+  - Md5Lukas
+main: de.md5lukas.<package>.<MainClass>
+loader: de.md5lukas.<package>.DependencyYmlLoader
+version: ${version}
+
+website: https://github.com/Sytm/<repo>
+
+api-version: "1.20"
