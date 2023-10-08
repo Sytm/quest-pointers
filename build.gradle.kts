@@ -24,6 +24,8 @@ dependencies {
   implementation(libs.schedulers)
   implementation(libs.pointers)
 
+  implementation(libs.bStats)
+
   implementation(libs.papertrail)
   implementation(libs.dependencyLoader)
 }
@@ -54,8 +56,15 @@ tasks {
       include(dependency(libs.pointers.get()))
       include(dependency(libs.schedulers.get()))
       include(dependency(libs.konfig.get()))
+      include(dependency("org.bstats::"))
     }
 
+    arrayOf(
+            "de.md5lukas.konfig",
+            "de.md5lukas.schedulers",
+            "de.md5lukas.waypoints.pointers",
+            "org.bstats")
+        .forEach { relocate(it, "de.md5lukas.questpointers.libs.${it.substringAfterLast('.')}") }
     relocate("de.md5lukas.paper.loader", "de.md5lukas.questpointers")
     relocate("io.papermc.papertrail", "de.md5lukas.questpointers.legacy")
   }
@@ -76,9 +85,7 @@ tasks {
     }
   }
 
-  runServer {
-    minecraftVersion(libs.versions.paper.get().substringBefore('-'))
-  }
+  runServer { minecraftVersion(libs.versions.paper.get().substringBefore('-')) }
 }
 
 spotless { kotlin { ktfmt() } }
@@ -92,7 +99,7 @@ modrinth {
   versionType = "release"
   uploadFile.set(tasks.shadowJar)
 
-  gameVersions.addAll("1.20.1")
+  gameVersions.addAll(libs.versions.paper.get().substringBefore('-'))
   loaders.addAll("paper")
 
   changelog.set(

@@ -12,23 +12,23 @@ import org.bukkit.configuration.ConfigurationSection
 object BlockDataAdapter : RegisteredTypeAdapter.Static<BlockData>(BlockData::class) {
 
   override fun get(section: ConfigurationSection, path: String) =
-    section
-      .getString(path)
-      ?.let {
-        Material.matchMaterial(it)
-          ?: throw IllegalArgumentException("The material $it is not valid")
-      }
-      ?.let(Bukkit::createBlockData)
+      section
+          .getString(path)
+          ?.let {
+            Material.matchMaterial(it)
+                ?: throw IllegalArgumentException("The material $it is not valid")
+          }
+          ?.let(Bukkit::createBlockData)
 }
 
 object StyleAdapter : RegisteredTypeAdapter.Static<Style>(Style::class) {
 
   override fun get(section: ConfigurationSection, path: String) =
-    section.getString(path)?.let { MiniMessage.miniMessage().deserialize(it).style() }
+      section.getString(path)?.let { MiniMessage.miniMessage().deserialize(it).style() }
 }
 
 object ComponentAdapter : RegisteredTypeAdapter.Static<Component>(Component::class) {
 
   override fun get(section: ConfigurationSection, path: String) =
-    section.getString(path)?.let(MiniMessage.miniMessage()::deserialize)
+      section.getString(path)?.let(MiniMessage.miniMessage()::deserialize)
 }

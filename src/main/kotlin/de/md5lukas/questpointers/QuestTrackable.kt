@@ -13,33 +13,33 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class QuestTrackable(
-  private val plugin: QuestPointers,
-  override val location: Location,
-  override val beaconColor: BeaconColor?,
-  override val hologramItem: ItemStack?,
-  private val name: String?,
+    private val plugin: QuestPointers,
+    override val location: Location,
+    override val beaconColor: BeaconColor?,
+    override val hologramItem: ItemStack?,
+    private val name: String?,
 ) : StaticTrackable {
 
   private val config: HologramConfigurationImpl
     get() = plugin.qpConfig.pointers.hologram
 
-
-
   override fun getHologramText(player: Player, translatedTarget: Location): Component {
     val color = Placeholder.styling("beacon_color", beaconColor?.textColor ?: NamedTextColor.WHITE)
     val distance = Formatter.number("distance", player.location.distance(translatedTarget))
     name?.let { name ->
-      return MiniMessage.miniMessage().deserialize(
-        config.textNamed,
-        Placeholder.unparsed("name", name),
-        color,
-        distance,
-      )
+      return MiniMessage.miniMessage()
+          .deserialize(
+              config.textNamed,
+              Placeholder.unparsed("name", name),
+              color,
+              distance,
+          )
     }
-    return MiniMessage.miniMessage().deserialize(
-      config.textDefault,
-      color,
-      distance,
-    )
+    return MiniMessage.miniMessage()
+        .deserialize(
+            config.textDefault,
+            color,
+            distance,
+        )
   }
 }

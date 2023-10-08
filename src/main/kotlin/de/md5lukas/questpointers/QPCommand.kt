@@ -1,6 +1,7 @@
 package de.md5lukas.questpointers
 
 import de.md5lukas.waypoints.pointers.BeaconColor
+import java.lang.NumberFormatException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.StringUtil
 
+@Suppress("EnumValuesSoftDeprecate")
 class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
   override fun execute(sender: CommandSender, label: String, args0: Array<out String>): Boolean {
@@ -25,7 +27,7 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
     when (args.removeFirstOrNull()?.lowercase()) {
       "stopall" ->
           playerArg(sender, args) { player -> plugin.pointerManager.disable(player) { true } }
-      "set" ->
+      "add" ->
           playerArg(sender, args) { player ->
             val coords =
                 arrayOf(
@@ -35,28 +37,37 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
                     .filterNotNull()
             if (coords.size != 3) {
               sender.error(
-                  "The proper usage is $label <player> set <x> <y> <z> [<world>] [<color>] [<item>] [<name...>]")
+                  "The proper usage is $label <player> add <x> <y> <z> [<world>] [<color>] [<item>] [<name...>]")
               return true
             }
 
+            val world =
+                args.removeFirstOrNull()?.let { worldName ->
+                  if (worldName == "_") return@let null
+                  val world = plugin.server.getWorld(worldName)
+                  if (world === null) {
+                    sender.error("The world \"$worldName\" could not be found")
+                    return true
+                  }
+                  world
+                }
+
             val target =
-                Location(
-                    args.removeFirstOrNull()?.let { worldName ->
-                      plugin.server.getWorld(worldName)
-                          ?: let {
-                            sender.error("The world \"$worldName\" could not be found")
-                            return true
-                          }
-                    } ?: player.world,
-                    coords[0].toDouble(),
-                    coords[1].toDouble(),
-                    coords[2].toDouble(),
-                )
+                try {
+                  Location(
+                      world ?: player.world,
+                      coords[0].toDouble(),
+                      coords[1].toDouble(),
+                      coords[2].toDouble(),
+                  )
+                } catch (nfe: NumberFormatException) {
+                  sender.error("Could not parse coordinates as numbers (${nfe.message})")
+                  return true
+                }
 
             val color =
                 args.removeFirstOrNull()?.let { colorName ->
-                  if (colorName == "_")
-                    return@let null
+                  if (colorName == "_") return@let null
                   val color = BeaconColor.entries.firstOrNull { it.name.equals(colorName, true) }
                   if (color === null) {
                     sender.error("Could not find color with the name \"$colorName\"")
@@ -67,8 +78,7 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
             val item =
                 args.removeFirstOrNull()?.let { itemName ->
-                  if (itemName == "_")
-                    return@let null
+                  if (itemName == "_") return@let null
                   val material = Material.matchMaterial(itemName)
                   if (material === null) {
                     sender.error("Could not find material with the name \"$itemName\"")
@@ -86,15 +96,12 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
     return true
   }
 
-  private val beaconColors: List<String> =
-      BeaconColor.entries.map(BeaconColor::name).let { beaconColors ->
-        mutableListOf("_").also { it.addAll(beaconColors) }
-      }
-  private val materials: List<String> =
+  private val beaconColors = BeaconColor.values().map(BeaconColor::name).prependUnderscoreEntry()
+  private val materials =
       Material.values()
           .filter { !it.isLegacy && !it.isEmpty && (it.isItem || it.isBlock) }
           .map(Material::name)
-          .let { materials -> mutableListOf("_").also { it.addAll(materials) } }
+          .prependUnderscoreEntry()
 
   override fun tabComplete(
       sender: CommandSender,
@@ -108,10 +115,10 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
     when (val size = args.size) {
       0 -> {
-        suggestions.addAll(listOf("stopAll", "set"))
+        suggestions.addAll(listOf("stopAll", "add"))
       }
       1 -> {
-        StringUtil.copyPartialMatches(args[0], listOf("stopAll", "set"), suggestions)
+        StringUtil.copyPartialMatches(args[0], listOf("stopAll", "add"), suggestions)
       }
       2 -> {
         StringUtil.copyPartialMatches(
@@ -120,14 +127,17 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
       else -> {
         if ("stopAll".equals(args[0], true)) return suggestions
         when (size) {
-          3 -> suggestions.add("x")
-          4 -> suggestions.add("y")
-          5 -> suggestions.add("z")
+          3 -> suggestions.add("<x>")
+          4 -> suggestions.add("<y>")
+          5 -> suggestions.add("<z>")
           6 ->
               StringUtil.copyPartialMatches(
-                  args[5], plugin.server.worlds.map(World::getName), suggestions)
+                  args[5],
+                  plugin.server.worlds.map(World::getName).prependUnderscoreEntry(),
+                  suggestions)
           7 -> StringUtil.copyPartialMatches(args[6], beaconColors, suggestions)
           8 -> StringUtil.copyPartialMatches(args[7], materials, suggestions)
+          else -> suggestions.add("<name...>")
         }
       }
     }
@@ -157,5 +167,9 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
   private fun CommandSender.error(message: String) {
     sendMessage(Component.text(message, NamedTextColor.RED))
+  }
+
+  private fun List<String>.prependUnderscoreEntry(): List<String> {
+    return mutableListOf("_").also { it.addAll(this) }
   }
 }
