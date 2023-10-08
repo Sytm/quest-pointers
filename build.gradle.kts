@@ -19,7 +19,10 @@ repositories {
 dependencies {
   implementation(libs.paper)
   implementation(libs.stdlib)
-  // implementation(libs.coroutines)
+
+  implementation(libs.konfig)
+  implementation(libs.schedulers)
+  implementation(libs.pointers)
 
   implementation(libs.papertrail)
   implementation(libs.dependencyLoader)
@@ -48,19 +51,20 @@ tasks {
     dependencies {
       include(dependency(libs.dependencyLoader.get()))
       include(dependency(libs.papertrail.get()))
+      include(dependency(libs.pointers.get()))
+      include(dependency(libs.schedulers.get()))
+      include(dependency(libs.konfig.get()))
     }
 
-    relocate("de.md5lukas.paper.loader", "de.md5lukas.<package>")
-    relocate("io.papermc.papertrail", "de.md5lukas.<package>.legacy")
+    relocate("de.md5lukas.paper.loader", "de.md5lukas.questpointers")
+    relocate("io.papermc.papertrail", "de.md5lukas.questpointers.legacy")
   }
 
   processResources {
     val properties =
         mapOf(
-            "name" to project.name,
             "version" to project.version,
             "kotlinVersion" to libs.versions.kotlin.get(),
-            // "coroutinesVersion" to libs.versions.coroutines.get(),
         )
 
     inputs.properties(properties)
@@ -70,6 +74,10 @@ tasks {
     filesMatching(listOf("paper-plugin.yml", "plugin.yml", "dependencies.yml")) {
       expand(properties)
     }
+  }
+
+  runServer {
+    minecraftVersion(libs.versions.paper.get().substringBefore('-'))
   }
 }
 

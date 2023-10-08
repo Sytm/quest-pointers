@@ -1,0 +1,191 @@
+noPermission: "<red>You do not have the permission to perform this command!"
+
+worldNames:
+  world: "Overworld"
+  world_nether: "Nether"
+  world_the_end: "The End"
+
+pointers:
+  # Automatically disables the pointer when the player gets into the defined radius. Set to zero to disable
+  disableWhenReachedRadius: 5
+
+  # Connected worlds in this list allow the translation of the coordinates 1:8, so you can for example navigate
+  # in the nether to a pointer target in the overworld
+  connectedWorlds:
+    world: world_nether
+
+  actionBar:
+    enabled: false
+
+    interval: 20
+    # The indicator color is used to show where the target is by changing the color of one of the sections
+    indicatorColor: "<bold><dark_red>"
+    # The background color for the sections
+    normalColor: "<bold><gray>"
+    # Character to use as the colored direction indicators
+    section: "⬛"
+    # If you turn too much to either side these arrows are highlighted to indicator you need tp turn more
+    arrow:
+      left: "<-"
+      right: "->"
+    # The amount of sections used to show if you are walking in the correct direction. Must be an odd number or the plugin will correct it by adding one
+    amountOfSections: 35
+    # The range of between the center section and most outer section in degrees. So the field of view of the action bar indicator is range x 2
+    range: 70
+
+    # current: Translated name of the world the player is in
+    # correct: Translated name of the world the waypoint is in
+    wrongWorld: "<red>You are currently in the world <green><current><red>, but the waypoint is in <green><correct>"
+
+    # Show the distance to the target instead of the direction indicator when the player is sneaking
+    showDistance:
+      enabled: true
+      # distance: Distance to the waypoint in blocks
+      # height_difference: Height difference between player and waypoint. Positive when to high, negative when to low
+      message: "<gray>You are <yellow><distance:'.0'><gray> blocks away from your target"
+
+  bossBar:
+    enabled: true
+
+    # The tick interval where the boss bar is updated to account for the rotation of the player
+    interval: 4
+    #
+    recalculateEveryNthInterval: 5
+
+    # Color of the boss bar
+    # Available values: pink, blue, red, green, yellow, purple, white
+    barColor: blue
+
+    # Style of the boss bar
+    # Available values: progress, notched_6, notched_10, notched_12, notched_20
+    barStyle: progress
+
+    title: " · · ◈ · · ◈ · · E · · ◈ · · ◈ · · S · · ◈ · · ◈ · · W · · ◈ · · ◈ · · N"
+
+    indicator: "⬛"
+    # For example add <bold> if the indicator should be bold. The colors are randomized
+    indicatorStyle: ""
+    normalColor: "<white>"
+
+  beacon:
+    enabled: true
+
+    interval: 30
+    minDistance: 50
+    # If set to auto it will use the render distance of the server
+    maxDistance: auto
+    # The base block for the beacon. Use one of these for it to work: IRON_BLOCK, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK or NETHERITE_BLOCK
+    baseBlock: IRON_BLOCK
+    defaultColor: CLEAR
+
+  blinkingBlock:
+    enabled: true
+
+    # The interval in game ticks when the block should be changed
+    interval: 20
+    # The minimum and maximum distance for the blinking block to be visible
+    # Keep in mind that if you set the min distance to low it could be possible for the player to stand on the client-side block and get kicked for flying
+    minDistance: 10
+    maxDistance: 50
+    # The blocks that will be cycled through
+    blockSequence:
+      - GLASS
+      - GLOWSTONE
+
+  compass:
+    enabled: false
+
+    # The interval in game ticks when the compass target should be updated. Only relevant when tracking players
+    interval: 20
+
+  particle:
+    enabled: false
+
+    interval: 30
+    # The height offset from the ground where the particles should spawn
+    heightOffset: 0
+    # If set to true, the particles will also point into the direction of the target vertically
+    showVerticalDirection: false
+    # The amount of particles
+    amount: 10
+    # The total length of the particles in blocks
+    length: 1
+    # See here for different particles https://jd.papermc.io/paper/1.19/org/bukkit/Particle.html
+    particle: FLAME
+
+  trail:
+    enabled: false
+    interval: 10
+
+    # Settings for the pathing engine
+    pathing:
+      # The maximum distance that is calculated ahead each time
+      # Longer ranges take more time to calculate at a time but might provide
+      # better paths.
+      # If the pathfinder encounters unloaded chunks and loading is disabled it will stop there
+      maxLength: 200
+      # The maximum amount of iterations the pathfinding algorithm may perform.
+      # Needs to be set higher if distances increase or the environment is complex
+      maxIterations: 10000
+      # Allow the pathfinder to load chunks in advance to calculate the path.
+      allowChunkLoading: false
+      # Allow the pathfinder to generate chunks when attempting to load them
+      allowChunkGeneration: false
+      # Penalty to apply to possible moves across water
+      # Increased values make the pathfinder try to find a (possible) longer path around water.
+      # Set to zero to disable water movement
+      swimPenalty: 5.0
+      # The weight to apply to the pathfinder heuristic.
+      # Higher values make the pathfinder prefer to go more to the target at the cost of not 100%
+      # optimal paths
+      heuristicWeight: 2.0
+      # Strategy to use when deciding which blocks are allowed
+      # DIRECT: Finds the shortest possible path. Attempts to take routes through air or 1x1 spaces
+      # WALKABLE: All blocks to the target must be solid and walkable
+      # PLAYER: Like walkable but basic jumps are attempted
+      strategy: PLAYER
+
+    # Max distance between player and any part of the path.
+    # When exceeded the path is recalculated from the players current location
+    pathInvalidationDistance: 15
+    # When the player comes into this distance of the end of the last calculated trail
+    # An attempt is made to calculate a continuation
+    pathCalculateAheadDistance: 50
+    # When the path has been extended, every past part of the trail further
+    # away from the player than this distance is discared
+    retainMaxPlayerDistance: 30
+
+    particle:
+      # The spread of the particles
+      spread: 0.3
+      # The amount of particles spawned per block
+      # Highlights spawn 1.5 times the given amount
+      amount: 4
+      # To view all available Particles see here: https://jd.papermc.io/paper/1.19/org/bukkit/Particle.html
+      # The normal particle to spawn
+      normal: WAX_ON
+      # The highlight particle to spawn
+      highlight: WAX_OFF
+
+    # The distance of blocks between each highlight
+    highlightDistance: 7
+
+  hologram:
+    enabled: true
+
+    interval: 5
+    # The distance of the hologram from the player
+    distanceFromPlayer: 4
+    # The height offset of the hologram.
+    # If set to zero it will be at the exact location of the target and close to the ground, set to higher numbers to move it up
+    hologramHeightOffset: 1
+
+    text:
+      default: "<beacon_color>Objective<br>(<distance:'.0'>m)"
+      named: "<beacon_color><name><br>(<distance:'.0'>m)"
+
+    # Displays the icon of the target as a floating item below the text
+    icon:
+      enabled: true
+      # The vertical offset of the hovering item
+      offset: -0.3

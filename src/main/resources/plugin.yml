@@ -1,5 +1,5 @@
-name: ${name}
+name: QuestPointers
 authors:
   - Md5Lukas
-main: de.md5lukas.<package>.legacy.RequiresPaperPlugins
+main: de.md5lukas.questpointers.legacy.RequiresPaperPlugins
 version: ${version}

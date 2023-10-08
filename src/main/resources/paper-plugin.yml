@@ -1,10 +1,14 @@
-name: ${name}
+name: QuestPointers
 authors:
   - Md5Lukas
-main: de.md5lukas.<package>.<MainClass>
-loader: de.md5lukas.<package>.DependencyYmlLoader
+main: de.md5lukas.questpointers.QuestPointers
+loader: de.md5lukas.questpointers.DependencyYmlLoader
 version: ${version}
 
-website: https://github.com/Sytm/<repo>
+website: https://github.com/Sytm/quest-pointers
 
 api-version: "1.20"
+
+permissions:
+  questpointers.command:
+    default: op
