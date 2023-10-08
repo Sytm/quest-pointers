@@ -95,12 +95,12 @@ modrinth {
 
   token = modrinthToken
 
-  projectId = "<id>"
+  projectId = "questpointers"
   versionType = "release"
   uploadFile.set(tasks.shadowJar)
 
   gameVersions.addAll(libs.versions.paper.get().substringBefore('-'))
-  loaders.addAll("paper")
+  loaders.addAll("paper", "folia")
 
   changelog.set(
       provider {
