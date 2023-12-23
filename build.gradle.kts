@@ -25,9 +25,6 @@ dependencies {
   implementation(libs.pointers)
 
   implementation(libs.bStats)
-
-  implementation(libs.papertrail)
-  implementation(libs.dependencyLoader)
 }
 
 tasks {
@@ -41,18 +38,11 @@ tasks {
   shadowJar {
     archiveClassifier = ""
 
-    minimize {
-      // Only referenced by the paper-plugin.yml
-      exclude(dependency(libs.dependencyLoader.get()))
-      // Only referenced by the plugin.yml
-      exclude(dependency(libs.papertrail.get()))
-    }
+    minimize()
 
     exclude("META-INF/")
 
     dependencies {
-      include(dependency(libs.dependencyLoader.get()))
-      include(dependency(libs.papertrail.get()))
       include(dependency(libs.pointers.get()))
       include(dependency(libs.schedulers.get()))
       include(dependency(libs.konfig.get()))
@@ -65,8 +55,6 @@ tasks {
             "de.md5lukas.waypoints.pointers",
             "org.bstats")
         .forEach { relocate(it, "de.md5lukas.questpointers.libs.${it.substringAfterLast('.')}") }
-    relocate("de.md5lukas.paper.loader", "de.md5lukas.questpointers")
-    relocate("io.papermc.papertrail", "de.md5lukas.questpointers.legacy")
   }
 
   processResources {
@@ -80,7 +68,7 @@ tasks {
 
     filteringCharset = "UTF-8"
 
-    filesMatching(listOf("paper-plugin.yml", "plugin.yml", "dependencies.yml")) {
+    filesMatching("plugin.yml") {
       expand(properties)
     }
   }

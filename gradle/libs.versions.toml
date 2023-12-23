@@ -14,9 +14,6 @@ konfig = { group = "de.md5lukas", name = "spigot-konfig", version = "1.0.1" }
 
 bStats = { group = "org.bstats", name = "bstats-bukkit", version = "3.0.2" }
 
-dependencyLoader = { group = "de.md5lukas.paper", name = "paper-dependency-yml", version = "1.0.0" }
-papertrail = { group = "io.papermc", name = "paper-trail", version = "0.0.1-SNAPSHOT" }
-
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
