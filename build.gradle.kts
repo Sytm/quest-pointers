@@ -87,7 +87,7 @@ modrinth {
   versionType = "release"
   uploadFile.set(tasks.shadowJar)
 
-  gameVersions.addAll(libs.versions.paper.get().substringBefore('-'))
+  gameVersions.addAll("1.20.2", libs.versions.paper.get().substringBefore('-'))
   loaders.addAll("paper", "folia")
 
   changelog.set(
@@ -96,6 +96,4 @@ modrinth {
           renderItem(getLatest().withEmptySections(false).withHeader(false))
         }
       })
-
-  debugMode = true
 }
