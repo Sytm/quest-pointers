@@ -96,12 +96,11 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
     return true
   }
 
-  private val beaconColors = BeaconColor.values().map(BeaconColor::name).prependUnderscoreEntry()
+  private val beaconColors = BeaconColor.values().mapTo(mutableListOf("_"), BeaconColor::name)
   private val materials =
       Material.values()
           .filter { !it.isLegacy && !it.isEmpty && (it.isItem || it.isBlock) }
-          .map(Material::name)
-          .prependUnderscoreEntry()
+          .mapTo(mutableListOf("_"), Material::name)
 
   override fun tabComplete(
       sender: CommandSender,
@@ -133,7 +132,7 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
           6 ->
               StringUtil.copyPartialMatches(
                   args[5],
-                  plugin.server.worlds.map(World::getName).prependUnderscoreEntry(),
+                  plugin.server.worlds.mapTo(mutableListOf("_"), World::getName),
                   suggestions)
           7 -> StringUtil.copyPartialMatches(args[6], beaconColors, suggestions)
           8 -> StringUtil.copyPartialMatches(args[7], materials, suggestions)
@@ -167,9 +166,5 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
   private fun CommandSender.error(message: String) {
     sendMessage(Component.text(message, NamedTextColor.RED))
-  }
-
-  private fun List<String>.prependUnderscoreEntry(): List<String> {
-    return mutableListOf("_").also { it.addAll(this) }
   }
 }
