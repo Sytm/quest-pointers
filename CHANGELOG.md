@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## 1.0.2
+
+### Fixed
+- Thread check is triggered when a player sees the blinking block and teleports away on Folia [#1](https://github.com/Sytm/quest-pointers/issues/1)
+
 ## 1.0.1
 
 ### Changed

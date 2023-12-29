@@ -8,7 +8,7 @@ stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref =
 
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 
-pointers = { group = "de.md5lukas.waypoints", name = "pointers", version = "4.4.0" }
+pointers = { group = "de.md5lukas.waypoints", name = "pointers", version = "4.4.0.1" }
 schedulers = { group = "de.md5lukas", name = "schedulers", version = "1.0.1" }
 konfig = { group = "de.md5lukas", name = "spigot-konfig", version = "1.0.1" }
 
