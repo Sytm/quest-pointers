@@ -1,17 +1,20 @@
 package de.md5lukas.questpointers
 
 import de.md5lukas.waypoints.pointers.BeaconColor
+import net.kyori.adventure.key.Key
 import java.lang.NumberFormatException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.Registry
 import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.StringUtil
+import java.util.stream.Collectors
 
 @Suppress("EnumValuesSoftDeprecate")
 class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
@@ -79,12 +82,28 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
             val item =
                 args.removeFirstOrNull()?.let { itemName ->
                   if (itemName == "_") return@let null
-                  val material = Material.matchMaterial(itemName)
+                  val itemNameParts = itemName.split('|', limit = 2)
+
+                  val material = Material.matchMaterial(itemNameParts[0])
                   if (material === null) {
                     sender.error("Could not find material with the name \"$itemName\"")
                     return true
                   }
-                  ItemStack(material)
+
+                  val stack = ItemStack(material)
+
+                  if (itemNameParts.size == 2) {
+                    val customModelData = itemNameParts[1].toIntOrNull()
+                    if (customModelData == null) {
+                      sender.error("Could not parse custom model data \"${itemNameParts[1]}\"")
+                      return true
+                    }
+                    stack.editMeta {
+                      it.setCustomModelData(customModelData)
+                    }
+                  }
+
+                  stack
                 }
 
             val name = if (args.isEmpty()) null else args.joinToString(" ")
@@ -97,10 +116,11 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
   }
 
   private val beaconColors = BeaconColor.values().mapTo(mutableListOf("_"), BeaconColor::name)
-  private val materials =
-      Material.values()
-          .filter { !it.isLegacy && !it.isEmpty && (it.isItem || it.isBlock) }
-          .mapTo(mutableListOf("_"), Material::name)
+  private val materials: List<String> =
+      Registry.MATERIAL.stream()
+          .filter { !it.isEmpty && it.isItem }
+          .map(Material::name)
+          .collect(Collectors.toCollection { mutableListOf("_") })
 
   override fun tabComplete(
       sender: CommandSender,

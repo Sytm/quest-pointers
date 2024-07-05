@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## 1.1.0
+
+### Added
+- Ability to set custom model data for the hologram item. Example: `PAPER|12345`
+
 ## 1.0.2
 
 ### Fixed
