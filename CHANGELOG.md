@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## 1.1.1
+
+### Fixed
+- Plugin accidentally required Java 21 to run
+
 ## 1.1.0
 
 ### Added

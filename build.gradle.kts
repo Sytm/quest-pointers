@@ -27,6 +27,8 @@ dependencies {
   implementation(libs.bStats)
 }
 
+kotlin { jvmToolchain(libs.versions.jvmToolchain.get().toInt()) }
+
 tasks {
   compileKotlin {
     compilerOptions.freeCompilerArgs.addAll(
@@ -55,6 +57,8 @@ tasks {
             "de.md5lukas.waypoints.pointers",
             "org.bstats")
         .forEach { relocate(it, "de.md5lukas.questpointers.libs.${it.substringAfterLast('.')}") }
+
+    manifest { attributes("paperweight-mappings-namespace" to "mojang+yarn") }
   }
 
   processResources {
@@ -89,6 +93,8 @@ modrinth {
 
   gameVersions.addAll("1.20.2", libs.versions.paper.get().substringBefore('-'))
   loaders.addAll("paper", "folia")
+
+  syncBodyFrom = provider { project.file("README.md").readText() }
 
   changelog.set(
       provider {
