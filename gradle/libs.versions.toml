@@ -8,7 +8,7 @@ stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref =
 
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 
-pointers = { group = "de.md5lukas.waypoints", name = "pointers", version = "4.5.1" }
+pointers = { group = "de.md5lukas.waypoints", name = "pointers", version = "1.0.0" }
 schedulers = { group = "de.md5lukas", name = "schedulers", version = "1.0.1" }
 konfig = { group = "de.md5lukas", name = "spigot-konfig", version = "1.0.1" }
 
@@ -16,7 +16,7 @@ bStats = { group = "org.bstats", name = "bstats-bukkit", version = "3.0.2" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "io.github.goooler.shadow", version = "8.1.8" }
 minotaur = { id = "com.modrinth.minotaur", version = "2.+" }
 runPaper = { id = "xyz.jpenilla.run-paper", version = "2.+" }
 spotless = { id = "com.diffplug.spotless", version = "6.+" }

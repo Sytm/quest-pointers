@@ -1,5 +1,6 @@
 package de.md5lukas.questpointers.config
 
+import de.md5lukas.konfig.ConfigPath
 import de.md5lukas.konfig.Configurable
 import de.md5lukas.konfig.TypeAdapter
 import de.md5lukas.konfig.UseAdapter
@@ -15,6 +16,13 @@ class QPConfig {
 
   var noPermission: Component = Component.empty()
     private set
+
+  @ConfigPath("commandVersion")
+  var commandVersion0: Int? = null
+    private set
+
+  val commandVersion: Int
+    get() = commandVersion0 ?: 0
 
   @UseAdapter(MappedComponents::class)
   var worldNames: Map<String, Component> = emptyMap()

@@ -1,5 +1,8 @@
 noPermission: "<red>You do not have the permission to perform this command!"
 
+# Only increase if you have made sure to accommodate the respective new command format
+commandVersion: 1
+
 worldNames:
   world: "Overworld"
   world_nether: "Nether"

@@ -28,10 +28,12 @@ To be able to use these commands, the permission `questpointers.command` is requ
 `/questpointers stopAll <player>`:
 - `<player>`: The player to disable all enabled targets for
 
-`/questpointers add <player> <x> <y> <z> [<world>] [<color>] [<item>] [<name...>]`:
+`/questpointers add <player> <x> <y> <z> [<world>] [<color>] [<item>] [<enabledPointers>] [<name...>]`:
 - `<player>`: The player to add an additional target for
 - `<x>`, `<y>` and `<z>`: The coordinates of the target
 - `<world>`: The name of the world the target is in, or `_` to use the world the player is in
 - `<color>`: The color for the beacon beam and the text to use, or use `_` to use the default value from the config
 - `<item>`: The item to use as an icon for the hologram, or use `_` to not use one
+- `<enabledPointers>` (available when `commandVersion` is at least 1): Select a subset of available pointers 
+   to use for this specific target separated by a comma, or `_` to use all configured ones
 - `<name...>`: The name to use for the hologram pointer, can be multiple words

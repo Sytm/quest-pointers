@@ -3,6 +3,7 @@ package de.md5lukas.questpointers
 import de.md5lukas.questpointers.config.pointers.HologramConfigurationImpl
 import de.md5lukas.waypoints.pointers.BeaconColor
 import de.md5lukas.waypoints.pointers.StaticTrackable
+import de.md5lukas.waypoints.pointers.variants.PointerVariant
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -17,6 +18,7 @@ class QuestTrackable(
     override val location: Location,
     override val beaconColor: BeaconColor?,
     override val hologramItem: ItemStack?,
+    enabledPointerVariants: Set<PointerVariant>?,
     private val name: String?,
 ) : StaticTrackable {
 
@@ -42,4 +44,6 @@ class QuestTrackable(
             distance,
         )
   }
+
+  override val enabledPointerVariants: Set<PointerVariant> = enabledPointerVariants ?: emptySet()
 }

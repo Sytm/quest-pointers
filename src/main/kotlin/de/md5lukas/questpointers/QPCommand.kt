@@ -1,8 +1,10 @@
 package de.md5lukas.questpointers
 
 import de.md5lukas.waypoints.pointers.BeaconColor
-import net.kyori.adventure.key.Key
+import de.md5lukas.waypoints.pointers.variants.PointerVariant
 import java.lang.NumberFormatException
+import java.util.EnumSet
+import java.util.stream.Collectors
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
@@ -14,9 +16,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.StringUtil
-import java.util.stream.Collectors
 
-@Suppress("EnumValuesSoftDeprecate")
 class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
 
   override fun execute(sender: CommandSender, label: String, args0: Array<out String>): Boolean {
@@ -40,7 +40,7 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
                     .filterNotNull()
             if (coords.size != 3) {
               sender.error(
-                  "The proper usage is $label <player> add <x> <y> <z> [<world>] [<color>] [<item>] [<name...>]")
+                  "The proper usage is $label <player> add <x> <y> <z> [<world>] [<color>] [<item>] [<enabledPointers>] [<name...>]")
               return true
             }
 
@@ -98,29 +98,50 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
                       sender.error("Could not parse custom model data \"${itemNameParts[1]}\"")
                       return true
                     }
-                    stack.editMeta {
-                      it.setCustomModelData(customModelData)
-                    }
+                    stack.editMeta { it.setCustomModelData(customModelData) }
                   }
 
                   stack
                 }
 
+            val enabledPointers =
+                if (plugin.qpConfig.commandVersion >= 1) {
+                  args.removeFirstOrNull()?.let { rawEnabledPointers ->
+                    if (rawEnabledPointers == "_") return@let null
+                    val enabledPointers = EnumSet.noneOf(PointerVariant::class.java)
+                    rawEnabledPointers.split(',').forEach { variantName ->
+                      val variant =
+                          PointerVariant.entries.firstOrNull { it.name.equals(variantName, true) }
+                      if (variant === null) {
+                        sender.error("Could not find pointer with the name \"$variantName\"")
+                        return true
+                      }
+                      enabledPointers.add(variant)
+                    }
+                    enabledPointers
+                  }
+                } else null
+
             val name = if (args.isEmpty()) null else args.joinToString(" ")
 
-            plugin.pointerManager.enable(player, QuestTrackable(plugin, target, color, item, name))
+            plugin.pointerManager.enable(
+                player, QuestTrackable(plugin, target, color, item, enabledPointers, name))
           }
     }
 
     return true
   }
 
-  private val beaconColors = BeaconColor.values().mapTo(mutableListOf("_"), BeaconColor::name)
+  private val beaconColors = BeaconColor.entries.mapTo(mutableListOf("_"), BeaconColor::name)
   private val materials: List<String> =
       Registry.MATERIAL.stream()
           .filter { !it.isEmpty && it.isItem }
           .map(Material::name)
           .collect(Collectors.toCollection { mutableListOf("_") })
+  private val enabledPointers =
+      PointerVariant.entries
+          .filter { it.isEnabled(plugin.qpConfig.pointers) }
+          .map(PointerVariant::name)
 
   override fun tabComplete(
       sender: CommandSender,
@@ -156,6 +177,30 @@ class QPCommand(private val plugin: QuestPointers) : Command("questpointers") {
                   suggestions)
           7 -> StringUtil.copyPartialMatches(args[6], beaconColors, suggestions)
           8 -> StringUtil.copyPartialMatches(args[7], materials, suggestions)
+          9 -> {
+            val typed = args[8]
+            val lastComma = typed.lastIndexOf(',')
+
+            if (lastComma == -1) {
+              if (typed.isEmpty() || typed == "_") {
+                suggestions.add("_")
+              }
+              enabledPointers.forEach {
+                if (it.startsWith(typed, true)) {
+                  suggestions.add(it)
+                }
+              }
+            } else {
+              val rest = typed.substring(0, lastComma)
+              val previousValues = rest.split(',').map(String::uppercase)
+              val lastValue = typed.substring(lastComma + 1)
+              enabledPointers.forEach {
+                if (it.startsWith(lastValue, true) && it !in previousValues) {
+                  suggestions.add("$rest,$it")
+                }
+              }
+            }
+          }
           else -> suggestions.add("<name...>")
         }
       }
